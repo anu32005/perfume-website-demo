@@ -1,28 +1,33 @@
-const perfumes=[
-{name:"Rose Bloom",note:"floral",img:"https://images.unsplash.com/photo-1541643600914-78b084683601"},
-{name:"Forest Wood",note:"woody",img:"https://images.unsplash.com/photo-1595425964071-6a1b6c4d31b7"},
-{name:"Citrus Fresh",note:"citrus",img:"https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9"},
-{name:"Vanilla Sweet",note:"sweet",img:"https://images.unsplash.com/photo-1615631648086-325025c9e51e"}
-]
+const products = [
+{name:'Rose Bloom',price:'₹349',emoji:'🌹'},
+{name:'Forest King',price:'₹329',emoji:'🌲'},
+{name:'Citrus Breeze',price:'₹299',emoji:'🍋'},
+{name:'Ocean Mist',price:'₹319',emoji:'🌊'}
+];
 
-let cart=0
-let wish=0
+let cartCount = 0;
+let wishCount = 0;
 
-function render(list){
-document.getElementById("products").innerHTML=
-list.map(p=>`
-<div class="card">
-<img src="${p.img}">
+function renderProducts(){
+document.getElementById('productGrid').innerHTML =
+products.map(p=>`
+<div class="product-card">
+<div style="font-size:60px">${p.emoji}</div>
 <h3>${p.name}</h3>
-<p>${p.note}</p>
-<button class="add" onclick="addCart()">Add</button>
+<p>${p.price}</p>
+<button class="add-cart-btn" onclick="addToCart()">Add</button>
 </div>
-`).join("")
+`).join('');
 }
 
-function filterNote(note){
-if(note==='all') render(perfumes)
-else render(perfumes.filter(p=>p.note===note))
+function addToCart(){
+cartCount++;
+document.getElementById('cartBadge').textContent = cartCount;
 }
 
-render(perfumes)
+function popHeart(){
+wishCount++;
+document.getElementById('wishBadge').textContent = wishCount;
+}
+
+renderProducts();
