@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BLOOME — Wear the Garden Within</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--green:#2d6a4f;--green-mid:#40916c;--green-light:#d8f3dc;--rose:#e63946;--gold:#b5838d;--amber:#e9c46a;--cream:#fefae0;--text:#1b1b2f;--muted:#6b7280;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;}
+
+/* overlays */
+#petalCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;}
+.heart-burst{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:180px;z-index:9999;pointer-events:none;display:none;filter:drop-shadow(0 0 40px rgba(230,57,70,.6));}
+.heart-burst.active{display:block;animation:heartPop 1.2s cubic-bezier(.34,1.56,.64,1) forwards;}
+@keyframes heartPop{0%{transform:translate(-50%,-50%) scale(0);opacity:1;}50%{transform:translate(-50%,-50%) scale(1.3);}80%{transform:translate(-50%,-50%) scale(.95);}100%{transform:translate(-50%,-50%) scale(.7);opacity:0;}}
+.cart-burst{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:130px;z-index:9999;pointer-events:none;display:none;}
+.cart-burst.active{display:block;animation:cartPop .9s ease forwards;}
+@keyframes cartPop{0%{transform:translate(-50%,-50%) scale(0);opacity:1;}40%{transform:translate(-50%,-50%) scale(1.5);}100%{transform:translate(-50%,-50%) scale(.4);opacity:0;}}
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--green);color:#fff;padding:16px 32px;border-radius:100px;font-size:15px;font-weight:600;box-shadow:0 8px 32px rgba(45,106,79,.4);z-index:9999;transition:transform .5s cubic-bezier(.34,1.56,.64,1);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* nav */
+nav{position:sticky;top:0;z-index:500;background:rgba(254,250,224,.96);backdrop-filter:blur(12px);box-shadow:0 2px 24px rgba(45,106,79,.08);padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:72px;border-bottom:1px solid rgba(45,106,79,.1);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--green);letter-spacing:4px;display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-links{display:flex;align-items:center;list-style:none;gap:4px;}
+.nav-links>li>a{padding:8px 16px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;border-radius:100px;transition:all .2s;}
+.nav-links>li>a:hover,.nav-links>li>a.active{background:var(--green-light);color:var(--green);}
+.nav-icons{display:flex;align-items:center;gap:8px;}
+.nav-icon-btn{position:relative;background:none;border:none;cursor:pointer;width:44px;height:44px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.nav-icon-btn:hover{background:var(--green-light);}
+.badge{position:absolute;top:4px;right:4px;background:var(--rose);color:#fff;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.badge.bump{animation:bump .4s ease;}
+@keyframes bump{0%{transform:scale(1);}50%{transform:scale(1.7);}100%{transform:scale(1);}}
+
+/* hero */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:linear-gradient(160deg,#e8f5e9 0%,#fefae0 45%,#ffe8ef 100%);}
+.hero-bg-blob{position:absolute;border-radius:50%;opacity:.07;pointer-events:none;}
+.b1{width:700px;height:700px;background:var(--green);top:-250px;right:-150px;}
+.b2{width:500px;height:500px;background:var(--rose);bottom:-150px;left:-100px;}
+.b3{width:350px;height:350px;background:var(--amber);top:25%;right:18%;}
+
+/* animated floating decor */
+.float-deco{position:absolute;inset:0;pointer-events:none;z-index:1;}
+.fd{position:absolute;opacity:0;animation:fdFloat 9s ease-in-out infinite;}
+@keyframes fdFloat{0%{opacity:0;transform:translateY(8px);}15%{opacity:.3;}50%{opacity:.18;transform:translateY(-28px) rotate(12deg);}85%{opacity:.3;}100%{opacity:0;transform:translateY(8px);}}
+
+.hero-content{position:relative;z-index:2;padding:80px 60px;max-width:600px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 20px;border-radius:100px;margin-bottom:24px;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(60px,7.5vw,96px);font-weight:700;line-height:.92;margin-bottom:24px;letter-spacing:-1px;}
+.hero h1 .l2{color:var(--green);font-style:italic;}
+.hero h1 .l3{color:#c9184a;}
+.hero-sub{font-size:17px;color:var(--muted);line-height:1.85;margin-bottom:40px;max-width:440px;}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;}
+.btn-p{background:var(--green);color:#fff;padding:16px 36px;border-radius:100px;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;}
+.btn-p:hover{background:#1e5137;transform:translateY(-3px);box-shadow:0 12px 32px rgba(45,106,79,.35);}
+.btn-g{background:transparent;color:var(--green);padding:16px 36px;border-radius:100px;font-size:14px;font-weight:700;border:2px solid var(--green);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-family:'DM Sans',sans-serif;}
+.btn-g:hover{background:var(--green-light);}
+
+/* big tree */
+.hero-tree-wrap{position:absolute;right:5%;bottom:0;width:460px;transform-origin:bottom center;animation:treeSway 7s ease-in-out infinite;z-index:2;}
+@keyframes treeSway{0%,100%{transform:rotate(-1.5deg);}50%{transform:rotate(1.8deg);}}
+.hero-tree-wrap.bloom{animation:treeBloom .7s ease forwards,treeSway 7s ease-in-out .7s infinite;}
+@keyframes treeBloom{0%{transform:scale(1);}50%{transform:scale(1.09);}100%{transform:scale(1);}}
+
+/* spring flowers sprinkle from tree */
+.spring-bloom{position:absolute;left:50%;bottom:55%;font-size:0;opacity:0;pointer-events:none;animation:springSpray 10s ease-in-out infinite;}
+@keyframes springSpray{0%,25%{font-size:0;opacity:0;transform:translate(-50%,0) rotate(0deg);}35%{font-size:30px;opacity:1;transform:translate(-50%,-30px) rotate(-15deg);}55%{font-size:26px;opacity:.8;transform:translate(var(--tx),-90px) rotate(var(--tr));}80%,100%{font-size:0;opacity:0;transform:translate(var(--tx),-150px);}}
+
+/* strip */
+.strip{background:var(--green);padding:28px 60px;display:flex;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:16px;}
+.ns{text-align:center;color:#fff;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.ns .ic{font-size:32px;}
+.ns .lb{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.ns .sb{font-size:11px;opacity:.65;}
+
+/* sections */
+section{padding:80px 60px;}
+.sey{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+.stit{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,52px);font-weight:700;line-height:1.1;margin-bottom:12px;}
+.stit em{color:var(--green);font-style:italic;}
+.drow{text-align:center;font-size:18px;letter-spacing:10px;opacity:.22;margin:10px 0 36px;}
+
+/* scent category cards */
+.scent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.scent-card{border-radius:24px;padding:42px 28px;text-align:center;cursor:pointer;transition:transform .3s,box-shadow .3s;text-decoration:none;display:block;}
+.scent-card:hover{transform:translateY(-10px);box-shadow:0 24px 60px rgba(0,0,0,.13);}
+.sc-her{background:linear-gradient(135deg,#fce4ec,#ffe0f3);}
+.sc-him{background:linear-gradient(135deg,#dff3e4,#c8e6c9);}
+.sc-uni{background:linear-gradient(135deg,#fffde7,#fff3e0);}
+.sc-icon{font-size:64px;display:block;margin-bottom:18px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.1));}
+.sc-tit{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;margin-bottom:10px;}
+.sc-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+.sc-lnk{display:inline-block;margin-top:16px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);}
+
+/* notes grid */
+.notes-section{background:#fff;}
+.notes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.note-card{border-radius:20px;padding:28px 20px;text-align:center;border:2px solid var(--green-light);transition:all .2s;cursor:pointer;}
+.note-card:hover{background:var(--green);border-color:var(--green);color:#fff;transform:scale(1.05);}
+.note-card:hover .nc-sub{color:rgba(255,255,255,.7);}
+.nc-em{font-size:46px;display:block;margin-bottom:10px;}
+.nc-nm{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;margin-bottom:4px;}
+.nc-sub{font-size:12px;color:var(--muted);}
+
+/* footer */
+footer{background:#0f2017;color:#9dc4a8;padding:60px;text-align:center;}
+.f-logo{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:#fff;letter-spacing:5px;margin-bottom:14px;}
+.f-links{display:flex;justify-content:center;gap:32px;margin:20px 0;flex-wrap:wrap;}
+.f-links a{color:#9dc4a8;text-decoration:none;font-size:13px;font-weight:600;transition:color .2s;}
+.f-links a:hover{color:#fff;}
+
+@media(max-width:900px){
+  nav{padding:0 16px;}
+  .nav-links{display:none;}
+  .hero-content{padding:60px 24px 220px;}
+  .hero-tree-wrap{width:260px;right:0;}
+  section{padding:50px 20px;}
+  .strip{padding:24px 20px;}
+  .scent-grid,.notes-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="heart-burst" id="heartBurst">💖</div>
+<div class="cart-burst" id="cartBurst">🌸</div>
+<canvas id="petalCanvas"></canvas>
+<div class="toast" id="toast">🌸 Added to your bag!</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">🌸 BLOOME</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="her.html">🌹 For Her</a></li>
+    <li><a href="him.html">🌿 For Him</a></li>
+    <li><a href="unisex.html">🌻 Unisex</a></li>
+    <li><a href="bestsellers.html">⭐ Bestsellers</a></li>
+  </ul>
+  <div class="nav-icons">
+    <button class="nav-icon-btn" onclick="addToWish()" title="Wishlist">🤍<span class="badge" id="wishBadge">0</span></button>
+    <button class="nav-icon-btn" title="Bag">🛍️<span class="badge" id="cartBadge">0</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding:0;">
+  <div class="hero-bg-blob b1"></div>
+  <div class="hero-bg-blob b2"></div>
+  <div class="hero-bg-blob b3"></div>
+
+  <!-- floating decor -->
+  <div class="float-deco">
+    <span class="fd" style="top:12%;left:5%;font-size:32px;animation-delay:0s">🌹</span>
+    <span class="fd" style="top:36%;left:3%;font-size:24px;animation-delay:1.5s">🌿</span>
+    <span class="fd" style="top:62%;left:8%;font-size:28px;animation-delay:3.2s">🍂</span>
+    <span class="fd" style="top:22%;left:44%;font-size:22px;animation-delay:2s">🌸</span>
+    <span class="fd" style="top:75%;left:32%;font-size:20px;animation-delay:1s">🌼</span>
+    <span class="fd" style="top:8%;right:42%;font-size:26px;animation-delay:.5s">🌷</span>
+    <span class="fd" style="top:85%;right:18%;font-size:22px;animation-delay:2.5s">🍃</span>
+    <span class="fd" style="top:50%;left:20%;font-size:20px;animation-delay:.8s">🪷</span>
+  </div>
+
+  <!-- BIG TREE SVG -->
+  <div class="hero-tree-wrap" id="heroTree">
+    <svg viewBox="0 0 420 700" xmlns="http://www.w3.org/2000/svg" width="100%">
+      <ellipse cx="210" cy="688" rx="100" ry="18" fill="#4caf50" opacity=".2"/>
+      <rect x="184" y="480" width="52" height="220" rx="14" fill="#8d6e63"/>
+      <rect x="198" y="490" width="16" height="210" rx="8" fill="#a1887f" opacity=".4"/>
+      <ellipse cx="210" cy="380" rx="185" ry="210" fill="#1b5e20"/>
+      <ellipse cx="210" cy="315" rx="162" ry="185" fill="#2e7d32"/>
+      <ellipse cx="210" cy="255" rx="138" ry="158" fill="#388e3c"/>
+      <ellipse cx="210" cy="198" rx="114" ry="132" fill="#43a047"/>
+      <ellipse cx="210" cy="148" rx="90" ry="106" fill="#4caf50"/>
+      <ellipse cx="210" cy="102" rx="66" ry="82" fill="#66bb6a"/>
+      <ellipse cx="210" cy="62" rx="42" ry="56" fill="#81c784"/>
+      <!-- pink blossoms -->
+      <circle cx="104" cy="272" r="20" fill="#f48fb1" opacity=".95"/>
+      <circle cx="116" cy="250" r="13" fill="#fce4ec"/>
+      <circle cx="316" cy="260" r="18" fill="#f48fb1" opacity=".95"/>
+      <circle cx="304" cy="240" r="12" fill="#fce4ec"/>
+      <circle cx="140" cy="186" r="16" fill="#f8bbd9" opacity=".9"/>
+      <circle cx="280" cy="178" r="17" fill="#f8bbd9" opacity=".9"/>
+      <circle cx="210" cy="48" r="18" fill="#f48fb1" opacity=".95"/>
+      <circle cx="186" cy="60" r="11" fill="#fce4ec"/>
+      <circle cx="234" cy="60" r="11" fill="#fce4ec"/>
+      <circle cx="160" cy="325" r="14" fill="#ffb3c6" opacity=".85"/>
+      <circle cx="258" cy="316" r="15" fill="#ffb3c6" opacity=".85"/>
+      <circle cx="130" cy="205" r="12" fill="#fff" opacity=".7"/>
+      <circle cx="290" cy="198" r="13" fill="#fff" opacity=".7"/>
+      <circle cx="210" cy="370" r="12" fill="#f48fb1" opacity=".7"/>
+      <!-- blossom clusters -->
+      <g opacity=".9"><circle cx="158" cy="132" r="9" fill="#fce4ec"/><circle cx="172" cy="120" r="10" fill="#f48fb1"/><circle cx="162" cy="110" r="8" fill="#fce4ec"/></g>
+      <g opacity=".9"><circle cx="250" cy="128" r="9" fill="#fce4ec"/><circle cx="264" cy="116" r="10" fill="#f48fb1"/><circle cx="258" cy="106" r="8" fill="#fce4ec"/></g>
+      <circle cx="210" cy="318" r="9" fill="#fff" opacity=".65"/>
+      <circle cx="172" cy="398" r="10" fill="#fff" opacity=".55"/>
+      <circle cx="248" cy="390" r="9" fill="#fff" opacity=".55"/>
+    </svg>
+    <!-- spring flowers that spray off tree -->
+    <div style="position:absolute;inset:0;pointer-events:none;">
+      <span class="spring-bloom" style="--tx:60px;--tr:20deg;animation-delay:0s">🌸</span>
+      <span class="spring-bloom" style="--tx:-50px;--tr:-18deg;animation-delay:1.8s">🌷</span>
+      <span class="spring-bloom" style="--tx:80px;--tr:30deg;animation-delay:3.5s">🌸</span>
+      <span class="spring-bloom" style="--tx:-70px;--tr:-25deg;animation-delay:5s">🌺</span>
+      <span class="spring-bloom" style="--tx:40px;--tr:10deg;animation-delay:6.8s">🌼</span>
+      <span class="spring-bloom" style="--tx:-30px;--tr:-12deg;animation-delay:2.4s">🪷</span>
+      <span class="spring-bloom" style="--tx:100px;--tr:35deg;animation-delay:8s">🌸</span>
+      <span class="spring-bloom" style="--tx:-90px;--tr:-30deg;animation-delay:4.2s">🌷</span>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">🌿 100% Natural · Bloom Luxe</div>
+    <h1>
+      Wear<br/>
+      <span class="l2">the Garden</span><br/>
+      <span class="l3">Within</span>
+    </h1>
+    <p class="hero-sub">Natural perfumes kissed by jasmine, sandalwood, oud & rose. Scents that whisper stories of forests, florals & faraway lands.</p>
+    <div class="hero-btns">
+      <button class="btn-p" onclick="document.getElementById('cats').scrollIntoView({behavior:'smooth'})">🛍️ Explore Scents</button>
+      <a class="btn-g" href="bestsellers.html">⭐ Bestsellers</a>
+    </div>
+  </div>
+</section>
+
+<!-- STRIP -->
+<div class="strip">
+  <div class="ns"><div class="ic">🌿</div><div class="lb">100% Natural</div><div class="sb">Plant-based only</div></div>
+  <div class="ns"><div class="ic">🐰</div><div class="lb">Cruelty Free</div><div class="sb">Never tested on animals</div></div>
+  <div class="ns"><div class="ic">🚚</div><div class="lb">Free Delivery</div><div class="sb">On orders over ₹499</div></div>
+  <div class="ns"><div class="ic">🔄</div><div class="lb">Easy Returns</div><div class="sb">15-day policy</div></div>
+  <div class="ns"><div class="ic">🌍</div><div class="lb">Eco Packaging</div><div class="sb">Recyclable & green</div></div>
+</div>
+
+<!-- CATEGORIES -->
+<section id="cats">
+  <div class="sey">Shop By Mood</div>
+  <h2 class="stit">A Scent For <em>Every Soul</em></h2>
+  <div class="drow">🌸 🌿 🌺 🌿 🌸</div>
+  <div class="scent-grid">
+    <a class="scent-card sc-her" href="her.html">
+      <span class="sc-icon">🌹</span>
+      <div class="sc-tit">For Her</div>
+      <p class="sc-desc">Floral, warm, and enchanting. Rose mornings, jasmine evenings, and everything in bloom.</p>
+      <span class="sc-lnk">Explore Her →</span>
+    </a>
+    <a class="scent-card sc-him" href="him.html">
+      <span class="sc-icon">🌲</span>
+      <div class="sc-tit">For Him</div>
+      <p class="sc-desc">Bold, woody, commanding. Sandalwood depths, oud mystique, cedarwood strength.</p>
+      <span class="sc-lnk">Explore Him →</span>
+    </a>
+    <a class="scent-card sc-uni" href="unisex.html">
+      <span class="sc-icon">🌻</span>
+      <div class="sc-tit">Unisex</div>
+      <p class="sc-desc">Clean, airy, universal. Fragrances that belong to every mood, every soul.</p>
+      <span class="sc-lnk">Explore Unisex →</span>
+    </a>
+  </div>
+</section>
+
+<!-- NOTES -->
+<section class="notes-section">
+  <div class="sey">Discover Notes</div>
+  <h2 class="stit">Shop by <em>Fragrance Note</em></h2>
+  <div class="drow">🌷 🍂 🪷 🍂 🌷</div>
+  <div class="notes-grid">
+    <div class="note-card" onclick="location='her.html?note=jasmine'"><span class="nc-em">🌸</span><div class="nc-nm">Jasmine</div><div class="nc-sub">Floral · Sweet · Dreamy</div></div>
+    <div class="note-card" onclick="location='him.html?note=sandalwood'"><span class="nc-em">🪵</span><div class="nc-nm">Sandalwood</div><div class="nc-sub">Woody · Warm · Grounding</div></div>
+    <div class="note-card" onclick="location='him.html?note=oud'"><span class="nc-em">🌑</span><div class="nc-nm">Oud</div><div class="nc-sub">Dark · Resinous · Luxe</div></div>
+    <div class="note-card" onclick="location='her.html?note=rose'"><span class="nc-em">🌹</span><div class="nc-nm">Rose</div><div class="nc-sub">Romantic · Soft · Classic</div></div>
+    <div class="note-card" onclick="location='unisex.html?note=vanilla'"><span class="nc-em">🍦</span><div class="nc-nm">Vanilla</div><div class="nc-sub">Sweet · Cosy · Gourmand</div></div>
+    <div class="note-card" onclick="location='him.html?note=cedar'"><span class="nc-em">🌲</span><div class="nc-nm">Cedar</div><div class="nc-sub">Fresh · Crisp · Masculine</div></div>
+    <div class="note-card" onclick="location='unisex.html?note=white-musk'"><span class="nc-em">🤍</span><div class="nc-nm">White Musk</div><div class="nc-sub">Clean · Soft · Ethereal</div></div>
+    <div class="note-card" onclick="location='her.html?note=amber'"><span class="nc-em">🍂</span><div class="nc-nm">Amber</div><div class="nc-sub">Warm · Resinous · Golden</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-logo">🌸 BLOOME</div>
+  <p style="margin-bottom:20px;opacity:.6;font-size:14px">Wear the Garden Within</p>
+  <div class="f-links">
+    <a href="index.html">Home</a><a href="her.html">For Her</a><a href="him.html">For Him</a><a href="unisex.html">Unisex</a><a href="bestsellers.html">Bestsellers</a>
+  </div>
+  <p style="opacity:.35;font-size:12px;margin-top:20px">© 2026 Bloome Natural Perfumes</p>
+</footer>
+
+<script>
+// ---- SHARED STATE ----
+let cartCount = parseInt(localStorage.getItem('bloome_cart'))||0;
+let wishCount = parseInt(localStorage.getItem('bloome_wish'))||0;
+document.getElementById('cartBadge').textContent = cartCount;
+document.getElementById('wishBadge').textContent = wishCount;
+
+function updateBadges(){
+  const cb=document.getElementById('cartBadge'),wb=document.getElementById('wishBadge');
+  cb.textContent=cartCount; wb.textContent=wishCount;
+  cb.classList.add('bump'); setTimeout(()=>cb.classList.remove('bump'),400);
+  localStorage.setItem('bloome_cart',cartCount);
+  localStorage.setItem('bloome_wish',wishCount);
+}
+function addToCart(e){e?.stopPropagation();cartCount++;updateBadges();showPetals();showCartBurst();showToast('🌸 Added to your bag!','');}
+function addToWish(e){e?.stopPropagation();wishCount++;updateBadges();triggerHeart();showToast('💖 Added to wishlist!','#e63946');}
+function triggerHeart(){const h=document.getElementById('heartBurst');h.classList.remove('active');void h.offsetWidth;h.classList.add('active');setTimeout(()=>h.classList.remove('active'),1400);}
+function showCartBurst(){const c=document.getElementById('cartBurst');const em=['🌸','🌺','🌷','🌼','🪷','🌻'];c.textContent=em[Math.floor(Math.random()*em.length)];c.classList.remove('active');void c.offsetWidth;c.classList.add('active');setTimeout(()=>c.classList.remove('active'),1000);}
+function showToast(msg,bg){const t=document.getElementById('toast');t.textContent=msg;t.style.background=bg||'var(--green)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+function bloomTree(){const tr=document.getElementById('heroTree');if(!tr)return;tr.classList.add('bloom');setTimeout(()=>tr.classList.remove('bloom'),800);}
+
+// ---- PETALS ----
+function showPetals(){
+  const canvas=document.getElementById('petalCanvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  const colors=['#f48fb1','#fce4ec','#c8e6c9','#fff9c4','#ffccbc','#e1bee7','#f8bbd9','#a5d6a7','#ffecb3','#ffe0f0','#d1fae5','#ffd6e0'];
+  const shapes=['petal','circle','star'];
+  let petals=[],frame=0;
+  for(let i=0;i<68;i++){
+    petals.push({x:Math.random()*canvas.width,y:-20-Math.random()*180,size:8+Math.random()*20,color:colors[Math.floor(Math.random()*colors.length)],vx:(Math.random()-.5)*2.8,vy:1.5+Math.random()*3,rot:Math.random()*360,rotV:(Math.random()-.5)*7,shape:shapes[Math.floor(Math.random()*shapes.length)],opacity:.7+Math.random()*.3,delay:Math.random()*70});
+  }
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let alive=false;
+    petals.forEach(p=>{
+      if(frame<p.delay){alive=true;return;}
+      p.x+=p.vx+Math.sin(frame*.02+p.delay)*.6; p.y+=p.vy; p.rot+=p.rotV; p.vy+=.018;
+      ctx.save();ctx.globalAlpha=p.opacity*Math.max(0,1-p.y/canvas.height);
+      ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;
+      if(p.shape==='petal'){ctx.beginPath();ctx.ellipse(0,0,p.size*.45,p.size,0,0,Math.PI*2);ctx.fill();}
+      else if(p.shape==='circle'){ctx.beginPath();ctx.arc(0,0,p.size*.5,0,Math.PI*2);ctx.fill();}
+      else{ctx.beginPath();for(let s=0;s<5;s++){const a=(s/5)*Math.PI*2-Math.PI/2,ia=a+Math.PI/5;s===0?ctx.moveTo(Math.cos(a)*p.size*.5,Math.sin(a)*p.size*.5):ctx.lineTo(Math.cos(a)*p.size*.5,Math.sin(a)*p.size*.5);ctx.lineTo(Math.cos(ia)*p.size*.22,Math.sin(ia)*p.size*.22);}ctx.closePath();ctx.fill();}
+      ctx.restore();
+      if(p.y<canvas.height+50)alive=true;
+    });
+    frame++;
+    if(alive&&frame<320)requestAnimationFrame(draw);else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
+}
+</script>
+</body>
+</html>

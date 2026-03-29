@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>For Him — BLOOME Natural Perfumes</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--green:#2d6a4f;--green-light:#d8f3dc;--rose:#e63946;--amber:#e9c46a;--cream:#fefae0;--text:#1b1b2f;--muted:#6b7280;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;}
+#petalCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;}
+.heart-burst{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:180px;z-index:9999;pointer-events:none;display:none;}
+.heart-burst.active{display:block;animation:heartPop 1.2s cubic-bezier(.34,1.56,.64,1) forwards;}
+@keyframes heartPop{0%{transform:translate(-50%,-50%) scale(0);opacity:1;}50%{transform:translate(-50%,-50%) scale(1.3);}80%{transform:translate(-50%,-50%) scale(.95);}100%{transform:translate(-50%,-50%) scale(.7);opacity:0;}}
+.cart-burst{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:130px;z-index:9999;pointer-events:none;display:none;}
+.cart-burst.active{display:block;animation:cartPop .9s ease forwards;}
+@keyframes cartPop{0%{transform:translate(-50%,-50%) scale(0);opacity:1;}40%{transform:translate(-50%,-50%) scale(1.5);}100%{transform:translate(-50%,-50%) scale(.4);opacity:0;}}
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--green);color:#fff;padding:16px 32px;border-radius:100px;font-size:15px;font-weight:600;box-shadow:0 8px 32px rgba(45,106,79,.4);z-index:9999;transition:transform .5s cubic-bezier(.34,1.56,.64,1);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+nav{position:sticky;top:0;z-index:500;background:rgba(254,250,224,.96);backdrop-filter:blur(12px);box-shadow:0 2px 24px rgba(45,106,79,.08);padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:72px;border-bottom:1px solid rgba(45,106,79,.1);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--green);letter-spacing:4px;display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-links{display:flex;align-items:center;list-style:none;gap:4px;}
+.nav-links>li>a{padding:8px 16px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;border-radius:100px;transition:all .2s;}
+.nav-links>li>a:hover,.nav-links>li>a.active{background:var(--green-light);color:var(--green);}
+.nav-icons{display:flex;align-items:center;gap:8px;}
+.nav-icon-btn{position:relative;background:none;border:none;cursor:pointer;width:44px;height:44px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.nav-icon-btn:hover{background:var(--green-light);}
+.badge{position:absolute;top:4px;right:4px;background:var(--rose);color:#fff;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.badge.bump{animation:bump .4s ease;}
+@keyframes bump{0%{transform:scale(1);}50%{transform:scale(1.7);}100%{transform:scale(1);}}
+.page-hero{position:relative;padding:70px 60px 60px;overflow:hidden;background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 45%,#dcedc8 100%);display:flex;align-items:center;min-height:320px;}
+.page-hero-text{position:relative;z-index:2;max-width:500px;}
+.page-hero-badge{display:inline-flex;align-items:center;gap:8px;background:#2d6a4f;color:#fff;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 18px;border-radius:100px;margin-bottom:20px;}
+.page-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,6vw,78px);font-weight:700;line-height:.95;margin-bottom:18px;color:#1a1a2e;}
+.page-hero h1 em{font-style:italic;color:#1b5e20;}
+.page-hero p{font-size:16px;color:#4a4a6a;line-height:1.8;max-width:420px;}
+.page-hero-sticker{position:absolute;right:8%;top:50%;transform:translateY(-50%);font-size:160px;animation:stkFloat 5s ease-in-out infinite;filter:drop-shadow(0 16px 32px rgba(45,106,79,.25));}
+@keyframes stkFloat{0%,100%{transform:translateY(-50%) rotate(-4deg);}50%{transform:translateY(calc(-50% - 22px)) rotate(4deg);}}
+.phf{position:absolute;font-size:28px;opacity:.15;animation:phfloat 6s ease-in-out infinite;}
+@keyframes phfloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-16px) rotate(12deg);}}
+.filter-bar{background:#fff;padding:24px 60px;border-bottom:1px solid rgba(45,106,79,.1);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.filter-label{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-right:4px;}
+.fb{padding:9px 20px;border-radius:100px;font-size:12px;font-weight:700;border:2px solid #e0e0e0;background:#fff;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.fb:hover,.fb.active{background:#2d6a4f;color:#fff;border-color:#2d6a4f;}
+.products-wrap{padding:50px 60px;}
+.prod-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.sey{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--green);}
+.pcount{font-size:13px;color:var(--muted);}
+.drow{text-align:center;font-size:18px;letter-spacing:10px;opacity:.22;margin:10px 0 34px;}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:28px;}
+.pcard{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.06);transition:transform .3s,box-shadow .3s;position:relative;}
+.pcard:hover{transform:translateY(-8px);box-shadow:0 20px 50px rgba(0,0,0,.13);}
+.pcard.hidden{display:none;}
+.pimg{height:220px;display:flex;align-items:center;justify-content:center;font-size:88px;position:relative;overflow:hidden;}
+.pimg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(58,125,68,.05),transparent 70%);}
+.pbadge{position:absolute;top:14px;left:14px;color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:100px;letter-spacing:.5px;text-transform:uppercase;}
+.pbadge.new{background:var(--green);}
+.pbadge.best{background:#b5838d;}
+.pbadge.limited{background:#7c3aed;}
+.pactions{position:absolute;top:14px;right:14px;display:flex;flex-direction:column;gap:8px;opacity:0;transition:opacity .2s,transform .2s;transform:translateX(10px);}
+.pcard:hover .pactions{opacity:1;transform:translateX(0);}
+.abtn{width:38px;height:38px;border-radius:50%;background:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 3px 10px rgba(0,0,0,.15);transition:all .2s;}
+.abtn:hover{background:var(--green-light);transform:scale(1.12);}
+.pnotes{position:absolute;bottom:0;left:0;right:0;display:flex;gap:4px;padding:8px 14px;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);transform:translateY(100%);transition:transform .25s;flex-wrap:wrap;}
+.pcard:hover .pnotes{transform:translateY(0);}
+.ntag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;background:var(--green-light);color:var(--green);text-transform:uppercase;}
+.pinfo{padding:20px;}
+.pname{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;margin-bottom:4px;}
+.psub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.pfoot{display:flex;align-items:center;justify-content:space-between;}
+.pprice{font-size:20px;font-weight:700;color:var(--green);}
+.acbtn{background:var(--green);color:#fff;border:none;cursor:pointer;padding:10px 20px;border-radius:100px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.acbtn:hover{background:#1e5137;transform:scale(1.06);}
+.empty{text-align:center;padding:80px 20px;opacity:.5;display:none;}
+.empty .ei{font-size:64px;display:block;margin-bottom:16px;}
+footer{background:#0f2017;color:#9dc4a8;padding:60px;text-align:center;}
+.f-logo{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:#fff;letter-spacing:5px;margin-bottom:14px;}
+.f-links{display:flex;justify-content:center;gap:32px;margin:20px 0;flex-wrap:wrap;}
+.f-links a{color:#9dc4a8;text-decoration:none;font-size:13px;font-weight:600;transition:color .2s;}
+.f-links a:hover{color:#fff;}
+@media(max-width:900px){nav{padding:0 16px;}.nav-links{display:none;}.page-hero{padding:40px 20px;}.page-hero-sticker{display:none;}.filter-bar,.products-wrap{padding:20px;}.pgrid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}}
+</style>
+</head>
+<body>
+<div class="heart-burst" id="heartBurst">💖</div>
+<div class="cart-burst" id="cartBurst">🌿</div>
+<canvas id="petalCanvas"></canvas>
+<div class="toast" id="toast"></div>
+
+<nav>
+  <a class="nav-logo" href="index.html">🌸 BLOOME</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="her.html">🌹 For Her</a></li>
+    <li><a href="him.html" class="active">🌿 For Him</a></li>
+    <li><a href="unisex.html">🌻 Unisex</a></li>
+    <li><a href="bestsellers.html">⭐ Bestsellers</a></li>
+  </ul>
+  <div class="nav-icons">
+    <button class="nav-icon-btn" onclick="addToWish()" title="Wishlist">🤍<span class="badge" id="wishBadge">0</span></button>
+    <button class="nav-icon-btn" title="Bag">🛍️<span class="badge" id="cartBadge">0</span></button>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <span class="phf" style="top:15%;left:3%;font-size:28px;animation-delay:0s">🌲</span>
+  <span class="phf" style="top:60%;left:2%;font-size:22px;animation-delay:1.5s">🌿</span>
+  <span class="phf" style="top:25%;left:42%;font-size:18px;animation-delay:2s">🪵</span>
+  <span class="phf" style="top:72%;left:38%;font-size:22px;animation-delay:.8s">🍃</span>
+  <div class="page-hero-text">
+    <div class="page-hero-badge">🌿 For Him Collection</div>
+    <h1>Bold as<br/><em>the Forest</em></h1>
+    <p>Sandalwood depths, oud mystique, cedar heights — fragrances for the man who commands every room.</p>
+  </div>
+  <div class="page-hero-sticker">🌲</div>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Note:</span>
+  <button class="fb active" onclick="filterNote(this,'all')">🌟 All</button>
+  <button class="fb" onclick="filterNote(this,'sandalwood')">🪵 Sandalwood</button>
+  <button class="fb" onclick="filterNote(this,'oud')">🌑 Oud</button>
+  <button class="fb" onclick="filterNote(this,'cedar')">🌲 Cedar</button>
+  <button class="fb" onclick="filterNote(this,'amber')">🍂 Amber</button>
+  <button class="fb" onclick="filterNote(this,'white-musk')">🤍 White Musk</button>
+  <button class="fb" onclick="filterNote(this,'jasmine')">🌸 Jasmine</button>
+</div>
+
+<div class="products-wrap">
+  <div class="prod-header">
+    <div class="sey">For Him Collection</div>
+    <div class="pcount" id="pcount">7 fragrances</div>
+  </div>
+  <div class="drow">🌲 🌿 🪵 🌿 🌲</div>
+  <div class="pgrid" id="pgrid"></div>
+  <div class="empty" id="empty"><span class="ei">🌲</span><p>No fragrances match this note!</p></div>
+</div>
+
+<footer>
+  <div class="f-logo">🌸 BLOOME</div>
+  <p style="margin-bottom:20px;opacity:.6;font-size:14px">Wear the Garden Within</p>
+  <div class="f-links">
+    <a href="index.html">Home</a><a href="her.html">For Her</a><a href="him.html">For Him</a><a href="unisex.html">Unisex</a><a href="bestsellers.html">Bestsellers</a>
+  </div>
+  <p style="opacity:.35;font-size:12px;margin-top:20px">© 2026 Bloome Natural Perfumes</p>
+</footer>
+
+<script>
+const PRODUCTS=[
+  {name:'Forest King',sub:'Woody Aromatic',price:349,emoji:'🌲',bg:'linear-gradient(135deg,#e8f5e9,#c8e6c9)',notes:['cedar','sandalwood'],badge:'best',desc:'Cedarwood · vetiver · green fern'},
+  {name:'Oud Noir',sub:'Dark Oriental',price:499,emoji:'🌑',bg:'linear-gradient(135deg,#3e2723,#4e342e)',notes:['oud','amber'],badge:'best',desc:'Aged oud · dark amber · labdanum'},
+  {name:'Sandalwood Dusk',sub:'Creamy Woody',price:389,emoji:'🪵',bg:'linear-gradient(135deg,#efebe9,#d7ccc8)',notes:['sandalwood','vanilla','white-musk'],badge:'',desc:'Mysore sandalwood · vanilla milk · soft musk'},
+  {name:'Cedar Storm',sub:'Fresh Woody',price:329,emoji:'🌿',bg:'linear-gradient(135deg,#e3f2fd,#c8e6c9)',notes:['cedar','white-musk'],badge:'new',desc:'Atlas cedar · bergamot · clean musk'},
+  {name:'Oud & Saffron',sub:'Royal Oriental',price:549,emoji:'🔮',bg:'linear-gradient(135deg,#f3e5f5,#e8d5b7)',notes:['oud','amber','jasmine'],badge:'limited',desc:'Royal oud · saffron · jasmine · patchouli'},
+  {name:'Vetiver Green',sub:'Earthy Fresh',price:319,emoji:'🍃',bg:'linear-gradient(135deg,#e8f5e9,#f9fbe7)',notes:['sandalwood','cedar'],badge:'new',desc:'Vetiver · green tea · cedar bark'},
+  {name:'Smoky Amber',sub:'Warm Intense',price:429,emoji:'🍂',bg:'linear-gradient(135deg,#fff3e0,#efebe9)',notes:['amber','sandalwood','oud'],badge:'',desc:'Smoked amber · sandalwood · dark vanilla'},
+];
+function badgeHTML(b){if(!b)return '';const map={new:'✨ New',best:'⭐ Best Seller',limited:'🔥 Limited'};return `<span class="pbadge ${b}">${map[b]}</span>`;}
+function renderProducts(note){const grid=document.getElementById('pgrid'),empty=document.getElementById('empty'),cnt=document.getElementById('pcount');const list=note==='all'?PRODUCTS:PRODUCTS.filter(p=>p.notes.includes(note));cnt.textContent=list.length+' fragrance'+(list.length!==1?'s':'');if(!list.length){grid.innerHTML='';empty.style.display='block';return;}empty.style.display='none';grid.innerHTML=list.map(p=>`<div class="pcard"><div class="pimg" style="background:${p.bg}"><span>${p.emoji}</span>${badgeHTML(p.badge)}<div class="pactions"><button class="abtn" onclick="addToWish(event)">🤍</button><button class="abtn">👁️</button></div><div class="pnotes">${p.notes.map(n=>`<span class="ntag">${n}</span>`).join('')}</div></div><div class="pinfo"><div class="pname">${p.name}</div><div class="psub">${p.sub} · ${p.desc}</div><div class="pfoot"><span class="pprice">₹${p.price}</span><button class="acbtn" onclick="addToCart(event)">🛒 Add</button></div></div></div>`).join('');}
+function filterNote(btn,note){document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderProducts(note);}
+let cartCount=parseInt(localStorage.getItem('bloome_cart'))||0;let wishCount=parseInt(localStorage.getItem('bloome_wish'))||0;
+document.getElementById('cartBadge').textContent=cartCount;document.getElementById('wishBadge').textContent=wishCount;
+function updateBadges(){const cb=document.getElementById('cartBadge'),wb=document.getElementById('wishBadge');cb.textContent=cartCount;wb.textContent=wishCount;cb.classList.add('bump');setTimeout(()=>cb.classList.remove('bump'),400);localStorage.setItem('bloome_cart',cartCount);localStorage.setItem('bloome_wish',wishCount);}
+function addToCart(e){e?.stopPropagation();cartCount++;updateBadges();showPetals();showCartBurst();showToast('🌸 Added to your bag!','');}
+function addToWish(e){e?.stopPropagation();wishCount++;updateBadges();triggerHeart();showToast('💖 Added to wishlist!','#e63946');}
+function triggerHeart(){const h=document.getElementById('heartBurst');h.classList.remove('active');void h.offsetWidth;h.classList.add('active');setTimeout(()=>h.classList.remove('active'),1400);}
+function showCartBurst(){const c=document.getElementById('cartBurst');const em=['🌸','🌺','🌷','🌼','🪷','🌻'];c.textContent=em[Math.floor(Math.random()*em.length)];c.classList.remove('active');void c.offsetWidth;c.classList.add('active');setTimeout(()=>c.classList.remove('active'),1000);}
+function showToast(msg,bg){const t=document.getElementById('toast');t.textContent=msg;t.style.background=bg||'var(--green)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+function showPetals(){const canvas=document.getElementById('petalCanvas');const ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;const colors=['#c8e6c9','#f48fb1','#fce4ec','#fff9c4','#ffccbc','#e1bee7','#f8bbd9','#a5d6a7','#ffecb3','#d1fae5'];const shapes=['petal','circle','star'];let petals=[],frame=0;for(let i=0;i<68;i++){petals.push({x:Math.random()*canvas.width,y:-20-Math.random()*180,size:8+Math.random()*20,color:colors[Math.floor(Math.random()*colors.length)],vx:(Math.random()-.5)*2.8,vy:1.5+Math.random()*3,rot:Math.random()*360,rotV:(Math.random()-.5)*7,shape:shapes[Math.floor(Math.random()*shapes.length)],opacity:.7+Math.random()*.3,delay:Math.random()*70});}function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);let alive=false;petals.forEach(p=>{if(frame<p.delay){alive=true;return;}p.x+=p.vx+Math.sin(frame*.02+p.delay)*.6;p.y+=p.vy;p.rot+=p.rotV;p.vy+=.018;ctx.save();ctx.globalAlpha=p.opacity*Math.max(0,1-p.y/canvas.height);ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;if(p.shape==='petal'){ctx.beginPath();ctx.ellipse(0,0,p.size*.45,p.size,0,0,Math.PI*2);ctx.fill();}else if(p.shape==='circle'){ctx.beginPath();ctx.arc(0,0,p.size*.5,0,Math.PI*2);ctx.fill();}else{ctx.beginPath();for(let s=0;s<5;s++){const a=(s/5)*Math.PI*2-Math.PI/2,ia=a+Math.PI/5;s===0?ctx.moveTo(Math.cos(a)*p.size*.5,Math.sin(a)*p.size*.5):ctx.lineTo(Math.cos(a)*p.size*.5,Math.sin(a)*p.size*.5);ctx.lineTo(Math.cos(ia)*p.size*.22,Math.sin(ia)*p.size*.22);}ctx.closePath();ctx.fill();}ctx.restore();if(p.y<canvas.height+50)alive=true;});frame++;if(alive&&frame<320)requestAnimationFrame(draw);else ctx.clearRect(0,0,canvas.width,canvas.height);}draw();}
+const urlNote=new URLSearchParams(window.location.search).get('note');renderProducts(urlNote||'all');
+</script>
+</body>
+</html>
