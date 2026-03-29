@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bestsellers — BLOOME Natural Perfumes</title>
+<link rel="stylesheet" href="../css/page.css"/>
+<style>
+.page-hero { background: linear-gradient(135deg, #1b2e1f 0%, #2d4a32 40%, #1a2e1c 100%); color: #fff; }
+.page-hero-badge { background: #e9c46a; color: #1a1a1a !important; }
+.page-hero h1 { color: #fff !important; }
+.page-hero h1 em { color: #e9c46a; }
+.page-hero p { color: rgba(255,255,255,0.75) !important; }
+.page-hero-badge { color: #1a1a1a; }
+.page-deco-sticker { position: absolute; right: 8%; top: 50%; transform: translateY(-50%); font-size: 150px; animation: floatSticker 4s ease-in-out infinite; filter: drop-shadow(0 16px 32px rgba(233,196,106,0.4)); }
+@keyframes floatSticker { 0%,100%{transform:translateY(-50%) rotate(-4deg) scale(1);} 50%{transform:translateY(calc(-50% - 20px)) rotate(5deg) scale(1.05);} }
+.vine-accent { font-size: 24px; letter-spacing: 8px; opacity: 0.2; margin: 8px 0 32px; text-align: center; }
+.note-filter-btn.active,.note-filter-btn:hover { background: #e9c46a; color: #1a1a1a; border-color: #e9c46a; }
+.stars { color: #f4a261; font-size: 13px; letter-spacing: 1px; margin-bottom: 4px; }
+.all-tab-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.cat-tab { padding: 10px 22px; border-radius: 100px; font-size: 12px; font-weight: 700; border: 2px solid #e0e0e0; background: #fff; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+.cat-tab.active, .cat-tab:hover { background: var(--green); color: #fff; border-color: var(--green); }
+.phf { color: #e9c46a !important; }
+</style>
+</head>
+<body>
+<div class="heart-burst" id="heartBurst">⭐</div>
+<div class="cart-burst" id="cartBurst">⭐</div>
+<canvas id="petalCanvas"></canvas>
+<div class="toast" id="toast"></div>
+
+<nav>
+  <a class="nav-logo" href="../index.html">🌸 BLOOME</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="her.html">🌹 For Her</a></li>
+    <li><a href="him.html">🌿 For Him</a></li>
+    <li><a href="unisex.html">🌻 Unisex</a></li>
+    <li><a href="bestsellers.html" class="active">⭐ Bestsellers</a></li>
+  </ul>
+  <div class="nav-icons">
+    <button class="nav-icon-btn" onclick="addToWish()" title="Wishlist">🤍<span class="badge" id="wishBadge">0</span></button>
+    <button class="nav-icon-btn" title="Bag">🛍️<span class="badge" id="cartBadge">0</span></button>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-flowers">
+    <span class="phf" style="top:15%;left:3%;animation-delay:0s;font-size:26px">⭐</span>
+    <span class="phf" style="top:55%;left:1%;animation-delay:1.5s;font-size:20px">🌟</span>
+    <span class="phf" style="top:25%;left:40%;animation-delay:2s;font-size:18px">✨</span>
+    <span class="phf" style="top:70%;left:35%;animation-delay:0.8s;font-size:22px">⭐</span>
+    <span class="phf" style="top:10%;right:35%;animation-delay:1s;font-size:18px">🌟</span>
+  </div>
+  <div class="page-hero-text">
+    <div class="page-hero-badge" style="color:#1a1a1a">⭐ Bestsellers</div>
+    <h1>Most<br/><em>Loved</em> Scents</h1>
+    <p>The fragrances our community can't stop wearing. Loved by thousands, crafted for everyone.</p>
+  </div>
+  <div class="page-deco-sticker">🏆</div>
+</div>
+
+<div class="filter-section">
+  <div class="filter-row">
+    <span class="filter-label">Category:</span>
+    <button class="cat-tab active" onclick="filterCat(this,'all')">🌟 All</button>
+    <button class="cat-tab" onclick="filterCat(this,'her')">🌹 For Her</button>
+    <button class="cat-tab" onclick="filterCat(this,'him')">🌿 For Him</button>
+    <button class="cat-tab" onclick="filterCat(this,'uni')">🌻 Unisex</button>
+  </div>
+</div>
+
+<div class="products-section">
+  <div class="products-header">
+    <div class="section-eyebrow" style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#2d6a4f;margin:0">⭐ Customer Favourites</div>
+    <div class="products-count" id="productCount">7 fragrances</div>
+  </div>
+  <div class="vine-accent">⭐ 🌸 🌟 🌿 ⭐</div>
+  <div class="product-grid" id="productGrid"></div>
+</div>
+
+<footer>
+  <div class="f-logo">🌸 BLOOME</div>
+  <p style="margin-bottom:20px;opacity:0.6;font-size:14px">Wear the Garden Within</p>
+  <div class="f-links">
+    <a href="../index.html">Home</a>
+    <a href="her.html">For Her</a>
+    <a href="him.html">For Him</a>
+    <a href="unisex.html">Unisex</a>
+    <a href="bestsellers.html">Bestsellers</a>
+  </div>
+  <p style="opacity:0.35;font-size:12px;margin-top:20px">© 2026 Bloome Natural Perfumes</p>
+</footer>
+
+<script src="../js/shared.js"></script>
+<script>
+const products = [
+  { id:1, name:'Rose Éclat', sub:'Romantic Floral · For Her', price:349, oldPrice:420, emoji:'🌹', bg:'linear-gradient(135deg,#fce4ec,#fff0f3)', cat:'her', rating:4.9, reviews:1240, badge:'best', desc:'Bulgarian rose, soft amber, warm musk', notes:['rose','amber'] },
+  { id:2, name:'Jasmine Nocturne', sub:'Floral Musky · For Her', price:389, oldPrice:null, emoji:'🪷', bg:'linear-gradient(135deg,#fce4ec,#ffe8ff)', cat:'her', rating:4.8, reviews:986, badge:'best', desc:'Night jasmine, violet, white musk', notes:['jasmine','white-musk'] },
+  { id:3, name:'Oud Noir', sub:'Dark Oriental · For Him', price:499, oldPrice:599, emoji:'🌑', bg:'linear-gradient(135deg,#2c2c3e,#3d2b1f)', cat:'him', rating:4.9, reviews:874, badge:'best', desc:'Aged oud, dark amber, labdanum', notes:['oud','amber'] },
+  { id:4, name:'Forest King', sub:'Woody Aromatic · For Him', price:349, oldPrice:null, emoji:'🌲', bg:'linear-gradient(135deg,#e8f5e9,#c8e6c9)', cat:'him', rating:4.7, reviews:762, badge:'best', desc:'Cedarwood, vetiver, green fern', notes:['cedar','sandalwood'] },
+  { id:5, name:'Vanilla Sky', sub:'Warm Gourmand · Unisex', price:349, oldPrice:400, emoji:'🌤️', bg:'linear-gradient(135deg,#fffde7,#fff3e0)', cat:'uni', rating:4.8, reviews:1102, badge:'best', desc:'Vanilla absolute, amber, sandalwood', notes:['vanilla','amber'] },
+  { id:6, name:'White Ombre', sub:'Clean Musky · Unisex', price:369, oldPrice:null, emoji:'🤍', bg:'linear-gradient(135deg,#fafafa,#e8eaf6)', cat:'uni', rating:4.7, reviews:654, badge:'best', desc:'White musk, iris, creamy vanilla', notes:['white-musk','vanilla'] },
+  { id:7, name:'Oud Rose', sub:'Oriental Floral · For Her', price:449, oldPrice:520, emoji:'🌹', bg:'linear-gradient(135deg,#fce4ec,#e8d5b7)', cat:'her', rating:4.9, reviews:1389, badge:'best', desc:'Deep oud, Damascus rose, saffron', notes:['oud','rose'] },
+];
+
+function stars(n) {
+  return '★'.repeat(Math.floor(n)) + (n % 1 >= 0.5 ? '½' : '') + '☆'.repeat(5 - Math.ceil(n));
+}
+
+function renderProducts(cat) {
+  const grid = document.getElementById('productGrid');
+  const countEl = document.getElementById('productCount');
+  const filtered = cat === 'all' ? products : products.filter(p => p.cat === cat);
+  countEl.textContent = filtered.length + ' fragrance' + (filtered.length !== 1 ? 's' : '');
+  grid.innerHTML = filtered.map(p => `
+    <div class="product-card">
+      <div class="product-img" style="background:${p.bg}">
+        <span>${p.emoji}</span>
+        <span class="p-badge best">⭐ Best Seller</span>
+        <div class="product-actions">
+          <button class="action-btn" onclick="addToWish(event)" title="Wishlist">🤍</button>
+          <button class="action-btn" title="Quick View">👁️</button>
+        </div>
+        <div class="product-notes">
+          ${p.notes.map(n => `<span class="note-tag">${n}</span>`).join('')}
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="stars">${stars(p.rating)} <span style="font-size:11px;color:#6b7280;font-family:'DM Sans',sans-serif">(${p.reviews.toLocaleString()})</span></div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-sub">${p.sub} · ${p.desc}</div>
+        <div class="product-footer">
+          <span>
+            ${p.oldPrice ? `<span class="product-old">₹${p.oldPrice}</span>` : ''}
+            <span class="product-price">₹${p.price}</span>
+          </span>
+          <button class="add-cart-btn" onclick="addToCart(event)">🛒 Add</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function filterCat(btn, cat) {
+  document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(cat);
+}
+
+renderProducts('all');
+</script>
+</body>
+</html>

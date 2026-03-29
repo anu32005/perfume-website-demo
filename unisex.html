@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Unisex — BLOOME Natural Perfumes</title>
+<link rel="stylesheet" href="../css/page.css"/>
+<style>
+.page-hero { background: linear-gradient(135deg, #fffde7 0%, #fff3e0 40%, #e8f5e9 100%); }
+.page-hero-badge { background: #e9c46a; color: #1a1a1a !important; }
+.page-hero h1 em { color: #f4a261; }
+.page-deco-sticker { position: absolute; right: 8%; top: 50%; transform: translateY(-50%); font-size: 150px; animation: floatSticker 5s ease-in-out infinite; filter: drop-shadow(0 16px 32px rgba(233,196,106,0.3)); }
+@keyframes floatSticker { 0%,100%{transform:translateY(-50%) rotate(-4deg);} 50%{transform:translateY(calc(-50% - 18px)) rotate(4deg);} }
+.vine-accent { font-size: 24px; letter-spacing: 8px; opacity: 0.2; margin: 8px 0 32px; text-align: center; }
+.note-filter-btn.active,.note-filter-btn:hover { background: #e9c46a; color: #1a1a1a; border-color: #e9c46a; }
+</style>
+</head>
+<body>
+<div class="heart-burst" id="heartBurst">💛</div>
+<div class="cart-burst" id="cartBurst">🌻</div>
+<canvas id="petalCanvas"></canvas>
+<div class="toast" id="toast"></div>
+
+<nav>
+  <a class="nav-logo" href="../index.html">🌸 BLOOME</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="her.html">🌹 For Her</a></li>
+    <li><a href="him.html">🌿 For Him</a></li>
+    <li><a href="unisex.html" class="active">🌻 Unisex</a></li>
+    <li><a href="bestsellers.html">⭐ Bestsellers</a></li>
+  </ul>
+  <div class="nav-icons">
+    <button class="nav-icon-btn" onclick="addToWish()" title="Wishlist">🤍<span class="badge" id="wishBadge">0</span></button>
+    <button class="nav-icon-btn" title="Bag">🛍️<span class="badge" id="cartBadge">0</span></button>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-flowers">
+    <span class="phf" style="top:15%;left:3%;animation-delay:0s;font-size:26px">🌻</span>
+    <span class="phf" style="top:55%;left:1%;animation-delay:1.5s;font-size:20px">🍃</span>
+    <span class="phf" style="top:25%;left:40%;animation-delay:2s;font-size:18px">🌼</span>
+    <span class="phf" style="top:70%;left:35%;animation-delay:0.8s;font-size:22px">🍀</span>
+    <span class="phf" style="top:10%;right:35%;animation-delay:1s;font-size:18px">🌾</span>
+  </div>
+  <div class="page-hero-text">
+    <div class="page-hero-badge" style="color:#1a1a1a">🌻 Unisex Collection</div>
+    <h1>Scents that<br/><em>Belong to All</em></h1>
+    <p>Universal fragrances — clean, airy, and free. Crafted for every soul, every story, every season.</p>
+  </div>
+  <div class="page-deco-sticker">🌻</div>
+</div>
+
+<div class="filter-section">
+  <div class="filter-row">
+    <span class="filter-label">Filter by Note:</span>
+    <button class="note-filter-btn active" onclick="filterNote(this,'all')">🌟 All</button>
+    <button class="note-filter-btn" onclick="filterNote(this,'vanilla')">🍦 Vanilla</button>
+    <button class="note-filter-btn" onclick="filterNote(this,'white-musk')">🤍 White Musk</button>
+    <button class="note-filter-btn" onclick="filterNote(this,'jasmine')">🌸 Jasmine</button>
+    <button class="note-filter-btn" onclick="filterNote(this,'sandalwood')">🪵 Sandalwood</button>
+    <button class="note-filter-btn" onclick="filterNote(this,'amber')">🍂 Amber</button>
+    <button class="note-filter-btn" onclick="filterNote(this,'cedar')">🌲 Cedar</button>
+  </div>
+</div>
+
+<div class="products-section">
+  <div class="products-header">
+    <div class="section-eyebrow" style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#2d6a4f;margin:0">Unisex Collection</div>
+    <div class="products-count" id="productCount">7 fragrances</div>
+  </div>
+  <div class="vine-accent">🌻 🍃 🌼 🍃 🌻</div>
+  <div class="product-grid" id="productGrid"></div>
+  <div class="empty-state" id="emptyState" style="display:none">
+    <span class="e-icon">🌻</span>
+    <p>No fragrances match this note. Try another!</p>
+  </div>
+</div>
+
+<footer>
+  <div class="f-logo">🌸 BLOOME</div>
+  <p style="margin-bottom:20px;opacity:0.6;font-size:14px">Wear the Garden Within</p>
+  <div class="f-links">
+    <a href="../index.html">Home</a>
+    <a href="her.html">For Her</a>
+    <a href="him.html">For Him</a>
+    <a href="unisex.html">Unisex</a>
+    <a href="bestsellers.html">Bestsellers</a>
+  </div>
+  <p style="opacity:0.35;font-size:12px;margin-top:20px">© 2026 Bloome Natural Perfumes</p>
+</footer>
+
+<script src="../js/shared.js"></script>
+<script>
+const products = [
+  { id:1, name:'Citrus Breeze', sub:'Fresh Citrus', price:299, emoji:'🍋', bg:'linear-gradient(135deg,#fffde7,#fff9c4)', notes:['white-musk','cedar'], badge:'new', desc:'Yuzu, bergamot, white cedar, clean musk' },
+  { id:2, name:'Ocean Mist', sub:'Aquatic Airy', price:319, emoji:'🌊', bg:'linear-gradient(135deg,#e3f2fd,#e0f7fa)', notes:['white-musk','jasmine'], badge:'', desc:'Sea salt, jasmine, driftwood, white musk' },
+  { id:3, name:'Green Tea Zen', sub:'Fresh Meditative', price:289, emoji:'🍵', bg:'linear-gradient(135deg,#f1f8e9,#e8f5e9)', notes:['jasmine','white-musk'], badge:'new', desc:'Green tea, jasmine, bamboo, light musk' },
+  { id:4, name:'Vanilla Sky', sub:'Warm Gourmand', price:349, emoji:'🌤️', bg:'linear-gradient(135deg,#fffde7,#fff3e0)', notes:['vanilla','amber','sandalwood'], badge:'best', desc:'Vanilla absolute, amber, sandalwood milk' },
+  { id:5, name:'White Ombre', sub:'Clean Musky', price:369, emoji:'🤍', bg:'linear-gradient(135deg,#fafafa,#e8eaf6)', notes:['white-musk','vanilla'], badge:'best', desc:'White musk, iris, creamy vanilla, powder' },
+  { id:6, name:'Cedar & Moss', sub:'Forest Fresh', price:339, emoji:'🌾', bg:'linear-gradient(135deg,#e8f5e9,#f9fbe7)', notes:['cedar','sandalwood'], badge:'', desc:'Atlas cedar, oakmoss, green vetiver' },
+  { id:7, name:'Amber Soleil', sub:'Sunny Warm', price:379, emoji:'☀️', bg:'linear-gradient(135deg,#fff3e0,#ffe0b2)', notes:['amber','vanilla','jasmine'], badge:'limited', desc:'Golden amber, jasmine, sun-dried vanilla' },
+];
+
+function renderProducts(activeNote) {
+  const grid = document.getElementById('productGrid');
+  const empty = document.getElementById('emptyState');
+  const countEl = document.getElementById('productCount');
+  const filtered = activeNote === 'all' ? products : products.filter(p => p.notes.includes(activeNote));
+  countEl.textContent = filtered.length + ' fragrance' + (filtered.length !== 1 ? 's' : '');
+  if (filtered.length === 0) { grid.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = filtered.map(p => `
+    <div class="product-card">
+      <div class="product-img" style="background:${p.bg}">
+        <span>${p.emoji}</span>
+        ${p.badge ? `<span class="p-badge ${p.badge}">${p.badge==='new'?'✨ New':p.badge==='best'?'⭐ Best Seller':p.badge==='limited'?'🔥 Limited':''}</span>` : ''}
+        <div class="product-actions">
+          <button class="action-btn" onclick="addToWish(event)" title="Wishlist">🤍</button>
+          <button class="action-btn" title="Quick View">👁️</button>
+        </div>
+        <div class="product-notes">
+          ${p.notes.map(n => `<span class="note-tag">${n}</span>`).join('')}
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-sub">${p.sub} · ${p.desc}</div>
+        <div class="product-footer">
+          <span class="product-price">₹${p.price}</span>
+          <button class="add-cart-btn" onclick="addToCart(event)">🛒 Add</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function filterNote(btn, note) {
+  document.querySelectorAll('.note-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(note);
+}
+
+const urlNote = new URLSearchParams(window.location.search).get('note');
+renderProducts(urlNote || 'all');
+</script>
+</body>
+</html>

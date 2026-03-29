@@ -1,1 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BLOOME — Wear the Garden Within</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --green: #2d6a4f;
+  --green-mid: #40916c;
+  --green-light: #d8f3dc;
+  --sage: #74c69d;
+  --rose: #e63946;
+  --rose-soft: #ffb3c1;
+  --gold: #b5838d;
+  --amber: #e9c46a;
+  --cream: #fefae0;
+  --petal: #ffd6e0;
+  --bark: #6d4c41;
+  --text: #1b1b2f;
+  --muted: #6b7280;
+  --white: #ffffff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;}
 
+/* ===== FALLING PETALS CANVAS ===== */
+#petalCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;}
+
+/* ===== HEART BURST ===== */
+.heart-burst{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:180px;z-index:9999;pointer-events:none;display:none;filter:drop-shadow(0 0 40px rgba(230,57,70,0.6));}
+.heart-burst.active{display:block;animation:heartPop 1.2s cubic-bezier(.34,1.56,.64,1) forwards;}
+@keyframes heartPop{0%{transform:translate(-50%,-50%) scale(0);opacity:1;}50%{transform:translate(-50%,-50%) scale(1.3);opacity:1;}80%{transform:translate(-50%,-50%) scale(0.95);opacity:1;}100%{transform:translate(-50%,-50%) scale(0.7);opacity:0;}}
+
+/* ===== CART BURST ===== */
+.cart-burst{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:120px;z-index:9999;pointer-events:none;display:none;}
+.cart-burst.active{display:block;animation:cartPop 0.9s ease forwards;}
+@keyframes cartPop{0%{transform:translate(-50%,-50%) scale(0);opacity:1;}40%{transform:translate(-50%,-50%) scale(1.4);opacity:1;}100%{transform:translate(-50%,-50%) scale(0.5);opacity:0;}}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--green);color:#fff;padding:16px 32px;border-radius:100px;font-size:15px;font-weight:600;box-shadow:0 8px 32px rgba(45,106,79,0.4);z-index:9999;transition:transform 0.5s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:10px;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ===== NAVBAR ===== */
+nav{position:sticky;top:0;z-index:500;background:rgba(254,250,224,0.95);backdrop-filter:blur(12px);box-shadow:0 2px 24px rgba(45,106,79,0.08);padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:72px;border-bottom:1px solid rgba(45,106,79,0.1);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--green);letter-spacing:4px;display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-links{display:flex;align-items:center;list-style:none;gap:4px;}
+.nav-links>li>a{padding:8px 16px;font-size:13px;font-weight:600;letter-spacing:0.5px;color:var(--text);text-decoration:none;border-radius:100px;transition:all 0.2s;}
+.nav-links>li>a:hover,.nav-links>li>a.active{background:var(--green-light);color:var(--green);}
+.nav-icons{display:flex;align-items:center;gap:8px;}
+.nav-icon-btn{position:relative;background:none;border:none;cursor:pointer;width:44px;height:44px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;transition:background 0.2s;color:var(--text);}
+.nav-icon-btn:hover{background:var(--green-light);}
+.badge{position:absolute;top:4px;right:4px;background:var(--rose);color:#fff;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform 0.3s;}
+.badge.bump{animation:bump 0.4s ease;}
+@keyframes bump{0%{transform:scale(1);}50%{transform:scale(1.6);}100%{transform:scale(1);}}
+
+/* ===== HERO ===== */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:linear-gradient(160deg,#e8f5e9 0%,#fefae0 40%,#ffe8ef 100%);}
+.hero-bg-circles{position:absolute;inset:0;pointer-events:none;}
+.hero-bg-circles span{position:absolute;border-radius:50%;opacity:0.08;}
+.c1{width:600px;height:600px;background:var(--green);top:-200px;right:-100px;}
+.c2{width:400px;height:400px;background:var(--rose);bottom:-100px;left:-80px;}
+.c3{width:300px;height:300px;background:var(--amber);top:30%;right:20%;}
+
+/* HERO TREE SVG */
+.hero-tree-wrap{position:absolute;right:5%;bottom:0;width:440px;transform-origin:bottom center;animation:treeSway 6s ease-in-out infinite;}
+@keyframes treeSway{0%,100%{transform:rotate(-1.5deg);}50%{transform:rotate(1.5deg);}}
+.hero-tree-wrap.bloom{animation:treeBloom 0.6s ease forwards,treeSway 6s ease-in-out 0.6s infinite;}
+@keyframes treeBloom{0%{transform:scale(1);}50%{transform:scale(1.08);}100%{transform:scale(1);}}
+
+/* SPRING FLOWERS AROUND TREE */
+.spring-flowers{position:absolute;right:5%;bottom:0;width:440px;pointer-events:none;}
+.sf{position:absolute;font-size:0;opacity:0;animation:sfBlooms 12s ease-in-out infinite;}
+@keyframes sfBlooms{0%,30%{font-size:0;opacity:0;transform:translateY(0) rotate(0deg);}40%{font-size:28px;opacity:1;transform:translateY(-20px) rotate(-10deg);}60%{font-size:24px;opacity:0.9;transform:translateY(-60px) rotate(15deg);}80%,100%{font-size:0;opacity:0;transform:translateY(-100px) rotate(30deg);}}
+
+.hero-content{position:relative;z-index:2;padding:80px 60px;max-width:580px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 18px;border-radius:100px;margin-bottom:24px;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(58px,7vw,92px);font-weight:700;line-height:0.95;margin-bottom:24px;letter-spacing:-1px;}
+.hero h1 .line2{color:var(--green);font-style:italic;}
+.hero h1 .line3{color:var(--gold);}
+.hero-sub{font-size:17px;color:var(--muted);line-height:1.85;margin-bottom:40px;max-width:440px;}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;}
+.btn-primary{background:var(--green);color:#fff;padding:16px 36px;border-radius:100px;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif;letter-spacing:0.5px;}
+.btn-primary:hover{background:#1e5137;transform:translateY(-3px);box-shadow:0 12px 32px rgba(45,106,79,0.35);}
+.btn-ghost{background:transparent;color:var(--green);padding:16px 36px;border-radius:100px;font-size:14px;font-weight:700;border:2px solid var(--green);cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-family:'DM Sans',sans-serif;}
+.btn-ghost:hover{background:var(--green-light);}
+
+/* FLOATING INGREDIENTS */
+.float-ingredients{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.fi{position:absolute;font-size:30px;opacity:0;animation:fiFloat 8s ease-in-out infinite;}
+@keyframes fiFloat{0%{opacity:0;transform:translateY(10px);}15%{opacity:0.35;}50%{opacity:0.2;transform:translateY(-25px) rotate(10deg);}85%{opacity:0.35;}100%{opacity:0;transform:translateY(10px);}}
+
+/* ===== NATURE STRIP ===== */
+.nature-strip{background:var(--green);padding:28px 60px;display:flex;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:16px;}
+.ns-item{text-align:center;color:#fff;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.ns-item .ic{font-size:32px;}
+.ns-item .lb{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.ns-item .sb{font-size:11px;opacity:0.65;}
+
+/* ===== SECTIONS ===== */
+section{padding:80px 60px;}
+.section-eyebrow{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,52px);font-weight:700;line-height:1.1;margin-bottom:12px;}
+.section-title em{color:var(--green);font-style:italic;}
+.deco-row{text-align:center;font-size:18px;letter-spacing:10px;opacity:0.25;margin:10px 0 36px;}
+
+/* ===== HOMEPAGE SCENT CARDS ===== */
+.scent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.scent-card{border-radius:24px;padding:40px 28px;text-align:center;cursor:pointer;transition:transform 0.3s,box-shadow 0.3s;text-decoration:none;display:block;}
+.scent-card:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(0,0,0,0.12);}
+.scent-card.him{background:linear-gradient(135deg,#dff3e4,#c8e6c9);}
+.scent-card.her{background:linear-gradient(135deg,#fce4ec,#ffccdd);}
+.scent-card.uni{background:linear-gradient(135deg,#fffde7,#fff3e0);}
+.scent-icon{font-size:60px;display:block;margin-bottom:16px;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.1));}
+.scent-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;margin-bottom:10px;}
+.scent-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+.scent-link{display:inline-block;margin-top:16px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);}
+
+/* ===== INGREDIENTS SHOWCASE ===== */
+.ingredients-section{background:#fff;}
+.notes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.note-card{border-radius:20px;padding:28px 20px;text-align:center;border:2px solid var(--green-light);transition:all 0.2s;cursor:pointer;}
+.note-card:hover,.note-card.selected{background:var(--green);border-color:var(--green);color:#fff;transform:scale(1.04);}
+.note-card:hover .note-sub,.note-card.selected .note-sub{color:rgba(255,255,255,0.7);}
+.note-emoji{font-size:44px;display:block;margin-bottom:10px;}
+.note-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;margin-bottom:4px;}
+.note-sub{font-size:12px;color:var(--muted);}
+
+/* ===== FOOTER ===== */
+footer{background:#0f2017;color:#9dc4a8;padding:60px;text-align:center;}
+.f-logo{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:#fff;letter-spacing:5px;margin-bottom:14px;}
+.f-links{display:flex;justify-content:center;gap:32px;margin:20px 0;flex-wrap:wrap;}
+.f-links a{color:#9dc4a8;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:0.5px;transition:color 0.2s;}
+.f-links a:hover{color:#fff;}
+
+@media(max-width:900px){
+  .scent-grid,.notes-grid{grid-template-columns:1fr;}
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .hero-content{padding:60px 24px 200px;}
+  .hero-tree-wrap{width:260px;right:0;}
+  section{padding:50px 20px;}
+  .nature-strip{padding:24px 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEART & CART BURST -->
+<div class="heart-burst" id="heartBurst">💖</div>
+<div class="cart-burst" id="cartBurst">🌸</div>
+<canvas id="petalCanvas"></canvas>
+<div class="toast" id="toast">🌸 Added to your bag!</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">🌸 BLOOME</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="pages/her.html">🌹 For Her</a></li>
+    <li><a href="pages/him.html">🌿 For Him</a></li>
+    <li><a href="pages/unisex.html">🌻 Unisex</a></li>
+    <li><a href="pages/bestsellers.html">⭐ Bestsellers</a></li>
+  </ul>
+  <div class="nav-icons">
+    <button class="nav-icon-btn" onclick="triggerHeart()" title="Wishlist">🤍<span class="badge" id="wishBadge">0</span></button>
+    <button class="nav-icon-btn" title="Bag">🛍️<span class="badge" id="cartBadge">0</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding:0;" id="hero">
+  <div class="hero-bg-circles"><span class="c1"></span><span class="c2"></span><span class="c3"></span></div>
+  
+  <!-- Floating ingredients decor -->
+  <div class="float-ingredients">
+    <span class="fi" style="top:12%;left:5%;animation-delay:0s">🌹</span>
+    <span class="fi" style="top:35%;left:3%;animation-delay:1.5s">🌿</span>
+    <span class="fi" style="top:60%;left:8%;animation-delay:3s">🍂</span>
+    <span class="fi" style="top:20%;left:42%;animation-delay:2s;font-size:20px">🌸</span>
+    <span class="fi" style="top:75%;left:30%;animation-delay:1s;font-size:20px">🌼</span>
+    <span class="fi" style="top:8%;right:40%;animation-delay:0.5s">🌷</span>
+    <span class="fi" style="top:85%;right:15%;animation-delay:2.5s;font-size:20px">🍃</span>
+    <span class="fi" style="top:50%;left:18%;animation-delay:0.8s;font-size:18px">🪷</span>
+  </div>
+
+  <!-- BIG TREE -->
+  <div class="hero-tree-wrap" id="heroTree">
+    <svg viewBox="0 0 420 680" xmlns="http://www.w3.org/2000/svg" width="100%">
+      <!-- Trunk -->
+      <rect x="182" y="470" width="56" height="210" rx="14" fill="#8d6e63"/>
+      <rect x="196" y="480" width="18" height="200" rx="8" fill="#a1887f" opacity="0.5"/>
+      <!-- Ground moss -->
+      <ellipse cx="210" cy="670" rx="90" ry="18" fill="#4caf50" opacity="0.25"/>
+      <!-- Tree layers -->
+      <ellipse cx="210" cy="370" rx="178" ry="200" fill="#1b5e20"/>
+      <ellipse cx="210" cy="310" rx="155" ry="175" fill="#2e7d32"/>
+      <ellipse cx="210" cy="255" rx="130" ry="150" fill="#388e3c"/>
+      <ellipse cx="210" cy="200" rx="108" ry="125" fill="#43a047"/>
+      <ellipse cx="210" cy="150" rx="84" ry="100" fill="#4caf50"/>
+      <ellipse cx="210" cy="105" rx="60" ry="78" fill="#66bb6a"/>
+      <ellipse cx="210" cy="68" rx="38" ry="52" fill="#81c784"/>
+      <!-- Pink spring blossoms -->
+      <circle cx="110" cy="260" r="18" fill="#f48fb1" opacity="0.95"/>
+      <circle cx="120" cy="240" r="12" fill="#fce4ec" opacity="0.95"/>
+      <circle cx="308" cy="248" r="16" fill="#f48fb1" opacity="0.95"/>
+      <circle cx="296" cy="228" r="11" fill="#fce4ec"/>
+      <circle cx="148" cy="180" r="14" fill="#f8bbd9" opacity="0.9"/>
+      <circle cx="270" cy="175" r="15" fill="#f8bbd9" opacity="0.9"/>
+      <circle cx="210" cy="52" r="16" fill="#f48fb1" opacity="0.95"/>
+      <circle cx="188" cy="62" r="10" fill="#fce4ec"/>
+      <circle cx="232" cy="62" r="10" fill="#fce4ec"/>
+      <circle cx="168" cy="315" r="13" fill="#ffb3c6" opacity="0.85"/>
+      <circle cx="254" cy="308" r="14" fill="#ffb3c6" opacity="0.85"/>
+      <circle cx="135" cy="200" r="11" fill="#fff" opacity="0.7"/>
+      <circle cx="286" cy="195" r="12" fill="#fff" opacity="0.7"/>
+      <circle cx="210" cy="360" r="11" fill="#f48fb1" opacity="0.7"/>
+      <!-- Cherry blossom clusters -->
+      <g opacity="0.9">
+        <circle cx="160" cy="130" r="8" fill="#fce4ec"/>
+        <circle cx="174" cy="120" r="9" fill="#f48fb1"/>
+        <circle cx="164" cy="112" r="7" fill="#fce4ec"/>
+      </g>
+      <g opacity="0.9">
+        <circle cx="248" cy="125" r="8" fill="#fce4ec"/>
+        <circle cx="260" cy="118" r="9" fill="#f48fb1"/>
+        <circle cx="255" cy="108" r="7" fill="#fce4ec"/>
+      </g>
+      <!-- White buds -->
+      <circle cx="210" cy="310" r="8" fill="#fff" opacity="0.7"/>
+      <circle cx="175" cy="390" r="9" fill="#fff" opacity="0.6"/>
+      <circle cx="245" cy="385" r="8" fill="#fff" opacity="0.6"/>
+    </svg>
+    <!-- Spring flowers that bloom around tree -->
+    <div class="spring-flowers">
+      <span class="sf" style="left:10%;bottom:60%;animation-delay:0s">🌸</span>
+      <span class="sf" style="left:20%;bottom:70%;animation-delay:1.5s">🌷</span>
+      <span class="sf" style="left:60%;bottom:55%;animation-delay:3s">🌸</span>
+      <span class="sf" style="left:75%;bottom:75%;animation-delay:2s">🌺</span>
+      <span class="sf" style="left:45%;bottom:80%;animation-delay:0.5s">🌼</span>
+      <span class="sf" style="left:30%;bottom:90%;animation-delay:4s">🌸</span>
+      <span class="sf" style="left:80%;bottom:65%;animation-delay:1s">🌷</span>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">🌿 100% Natural · Bloom Luxe</div>
+    <h1>
+      <span class="line1">Wear</span><br/>
+      <span class="line2">the Garden</span><br/>
+      <span class="line3">Within</span>
+    </h1>
+    <p class="hero-sub">Natural perfumes kissed by jasmine, sandalwood, oud & rose. Scents that whisper stories of forests, florals & faraway lands.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('categories').scrollIntoView({behavior:'smooth'})">🛍️ Explore Scents</button>
+      <a class="btn-ghost" href="pages/bestsellers.html">⭐ Bestsellers</a>
+    </div>
+  </div>
+</section>
+
+<!-- NATURE STRIP -->
+<div class="nature-strip">
+  <div class="ns-item"><div class="ic">🌿</div><div class="lb">100% Natural</div><div class="sb">Plant-based only</div></div>
+  <div class="ns-item"><div class="ic">🐰</div><div class="lb">Cruelty Free</div><div class="sb">Never tested on animals</div></div>
+  <div class="ns-item"><div class="ic">🚚</div><div class="lb">Free Delivery</div><div class="sb">On orders over ₹499</div></div>
+  <div class="ns-item"><div class="ic">🔄</div><div class="lb">Easy Returns</div><div class="sb">15-day policy</div></div>
+  <div class="ns-item"><div class="ic">🌍</div><div class="lb">Eco Packaging</div><div class="sb">Recyclable & green</div></div>
+</div>
+
+<!-- CATEGORIES -->
+<section id="categories">
+  <div class="section-eyebrow">Shop By Mood</div>
+  <h2 class="section-title">A Scent For <em>Every Soul</em></h2>
+  <div class="deco-row">🌸 🌿 🌺 🌿 🌸</div>
+  <div class="scent-grid">
+    <a class="scent-card her" href="pages/her.html">
+      <span class="scent-icon">🌹</span>
+      <div class="scent-title">For Her</div>
+      <p class="scent-desc">Floral, warm, and enchanting. Rose mornings, jasmine evenings, and everything in bloom.</p>
+      <span class="scent-link">Explore Her →</span>
+    </a>
+    <a class="scent-card him" href="pages/him.html">
+      <span class="scent-icon">🌲</span>
+      <div class="scent-title">For Him</div>
+      <p class="scent-desc">Bold, woody, and commanding. Sandalwood depths, oud mystique, cedarwood strength.</p>
+      <span class="scent-link">Explore Him →</span>
+    </a>
+    <a class="scent-card uni" href="pages/unisex.html">
+      <span class="scent-icon">🌻</span>
+      <div class="scent-title">Unisex</div>
+      <p class="scent-desc">Clean, airy, universal. Fragrances that belong to every mood, every soul, every story.</p>
+      <span class="scent-link">Explore Unisex →</span>
+    </a>
+  </div>
+</section>
+
+<!-- FRAGRANCE NOTES -->
+<section class="ingredients-section">
+  <div class="section-eyebrow">Discover Notes</div>
+  <h2 class="section-title">Shop by <em>Fragrance Note</em></h2>
+  <div class="deco-row">🌷 🍂 🪷 🍂 🌷</div>
+  <div class="notes-grid">
+    <div class="note-card" onclick="window.location='pages/her.html?note=jasmine'">
+      <span class="note-emoji">🌸</span>
+      <div class="note-name">Jasmine</div>
+      <div class="note-sub">Floral · Sweet · Dreamy</div>
+    </div>
+    <div class="note-card" onclick="window.location='pages/him.html?note=sandalwood'">
+      <span class="note-emoji">🪵</span>
+      <div class="note-name">Sandalwood</div>
+      <div class="note-sub">Woody · Warm · Grounding</div>
+    </div>
+    <div class="note-card" onclick="window.location='pages/him.html?note=oud'">
+      <span class="note-emoji">🌑</span>
+      <div class="note-name">Oud</div>
+      <div class="note-sub">Dark · Resinous · Luxe</div>
+    </div>
+    <div class="note-card" onclick="window.location='pages/her.html?note=rose'">
+      <span class="note-emoji">🌹</span>
+      <div class="note-name">Rose</div>
+      <div class="note-sub">Romantic · Soft · Classic</div>
+    </div>
+    <div class="note-card" onclick="window.location='pages/unisex.html?note=vanilla'">
+      <span class="note-emoji">🍦</span>
+      <div class="note-name">Vanilla</div>
+      <div class="note-sub">Sweet · Cosy · Gourmand</div>
+    </div>
+    <div class="note-card" onclick="window.location='pages/him.html?note=cedar'">
+      <span class="note-emoji">🌲</span>
+      <div class="note-name">Cedar</div>
+      <div class="note-sub">Fresh · Crisp · Masculine</div>
+    </div>
+    <div class="note-card" onclick="window.location='pages/unisex.html?note=white-musk'">
+      <span class="note-emoji">🤍</span>
+      <div class="note-name">White Musk</div>
+      <div class="note-sub">Clean · Soft · Ethereal</div>
+    </div>
+    <div class="note-card" onclick="window.location='pages/her.html?note=amber'">
+      <span class="note-emoji">🍂</span>
+      <div class="note-name">Amber</div>
+      <div class="note-sub">Warm · Resinous · Golden</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">🌸 BLOOME</div>
+  <p style="margin-bottom:20px;opacity:0.6;font-size:14px">Wear the Garden Within</p>
+  <div class="f-links">
+    <a href="index.html">Home</a>
+    <a href="pages/her.html">For Her</a>
+    <a href="pages/him.html">For Him</a>
+    <a href="pages/unisex.html">Unisex</a>
+    <a href="pages/bestsellers.html">Bestsellers</a>
+  </div>
+  <p style="opacity:0.35;font-size:12px;margin-top:20px">© 2026 Bloome Natural Perfumes · All rights reserved</p>
+</footer>
+
+<script src="../js/shared.js"></script>
+<script>
+// Sync cart/wish from localStorage
+document.getElementById('cartBadge').textContent = localStorage.getItem('bloome_cart') || 0;
+document.getElementById('wishBadge').textContent = localStorage.getItem('bloome_wish') || 0;
+</script>
+</body>
+</html>
