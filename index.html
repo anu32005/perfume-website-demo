@@ -3,31 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bloome Perfumes</title>
+<title>BLOOME — Natural Perfumes</title>
+
 <link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-<nav class="topbar">
-<div class="logo">🌸 BLOOME</div>
-<input type="text" placeholder="Search perfume..." id="search" onkeyup="searchPerfume()">
-<div class="icons">
-<a href="login.html">👤</a>
-<div onclick="wishlistClick()">🤍 <span id="wishCount">0</span></div>
-<a href="checkout.html">🛒 <span id="cartCount">0</span></a>
-</div>
-</nav>
-
-<section class="filters">
-<button onclick="filterNote('all')">All</button>
-<button onclick="filterNote('floral')">Floral</button>
-<button onclick="filterNote('woody')">Woody</button>
-<button onclick="filterNote('citrus')">Citrus</button>
-<button onclick="filterNote('sweet')">Sweet</button>
+<!-- HERO IMAGE -->
+<section class="hero-image">
+  <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1600" alt="Perfume girl">
+  <div class="hero-overlay">
+    <h1>Wear the Garden Within</h1>
+    <p>Natural perfumes inspired by nature</p>
+  </div>
 </section>
 
-<section class="products" id="products"></section>
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo">🌸 BLOOME</div>
+  <div class="nav-icons">
+    <button onclick="popHeart()">🤍<span id="wishBadge">0</span></button>
+    <button>🛍️<span id="cartBadge">0</span></button>
+  </div>
+</nav>
+
+<section id="shopSection">
+  <h2>Our Collection</h2>
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<div class="petal-container" id="petalContainer"></div>
+<div class="heart-burst" id="heartBurst">💖</div>
+<div class="toast" id="toast">🌸 Added to your bag!</div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
