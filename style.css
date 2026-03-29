@@ -1,0 +1,40 @@
+body{margin:0;font-family:sans-serif;background:#f5fff8}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+padding:10px;
+background:white;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+flex-wrap:wrap;
+}
+
+.topbar input{
+padding:8px;
+border-radius:20px;
+border:1px solid #ddd;
+}
+
+.filters{display:flex;gap:10px;padding:10px;flex-wrap:wrap;justify-content:center}
+
+.filters button{
+background:#34c38f;
+color:white;
+border:none;
+padding:8px 15px;
+border-radius:20px;
+}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:15px;
+border-radius:15px;
+text-align:center;
+}
